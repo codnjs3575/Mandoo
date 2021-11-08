@@ -1,0 +1,161 @@
+<html>
+<head>
+<meta name=viewport content="width=device-width, initial-scale=1, user-scalable=0">
+<meta charset="utf-8" />
+<link rel="stylesheet" href="css/core.css">
+<link rel="stylesheet" href="css/main.css">
+<title>만다라트</title>
+<style>
+	.feed { border-top: 1px solid #eee; }
+	
+	.feed .author { position: relative; }
+	
+	.feed .author .btn-del {
+		position: absolute;
+		right: 16px; top: 10px;
+		width: 42px; height: 42px;
+		background-image: url("images/ico_delete.png");
+		background-size: 24px;
+		background-position: 50%;
+		background-repeat: no-repeat;
+	}
+</style>
+</head>
+
+<body>
+	<div class="page-hdr">만다라트</div> 
+	<div class="page-body">
+		<div class="page-mnu">
+		<div class="menu" onclick="friend()">
+		<img src="https://i.imgur.com/JBXRb3O.png"></div> 
+		<div class="menu" onclick="community()">
+		<img src="https://i.imgur.com/3F1bCYa.png"></div> 
+		<div class="menu" onclick="mandal()">
+		<img src="https://i.imgur.com/mdo2SNQ.png"></div>
+		<div class="menu" onclick="check()">
+		<img src="https://i.imgur.com/ml9uCkN.png"></div>
+		<div class="menu" onclick="myInfo()">
+		<img src="https://i.imgur.com/1eBx8r8.png"></div>
+	</div>
+		<input id="fid" class="mtop-30" type="text" placeholder="친구 아이디를 입력하세요.">
+		<input type="submit" class="mtop-30" value="완료" onClick="addFriend()">
+		<div id="list" class="section"></div>
+		
+		<div class="page-msg hide">등록된 친구가 없습니다.</div>
+	</div> 
+</body> 
+</html>
+
+<script src="js/jquery-3.6.0.min.js"></script> 
+<script src="js/core.js"></script>
+<script>
+	$(document).ready(function() {
+		Page.init(start); 
+	});
+		
+		var myId = null; 
+		
+		function start(uid) {
+			myId = uid;
+			
+			AJAX.call("jsp/friendList.jsp", {id : uid}, function(data) {
+				var list = JSON.parse(data.trim());
+				show(list); 
+			});
+		}
+		
+		function show(list) {
+			var str = "", cnt = 0;
+			
+			for (var i=0; i<list.length; i++) {
+				if (list[i].id == myId) continue;
+				str += getFeedCode(list[i]);
+				cnt++;
+			}
+			$("#list").append(str); 
+			if (cnt == 0) {
+				$(".page-msg").removeClass("hide"); 
+			}
+		}
+			
+		function getFeedCode(user) { 
+			var str = "<div class='feed'>"; 
+			str += "<div class='author'>"; 
+			
+			if (user.images == null) {
+				str += "<div class='photo'></div>"; 
+			}
+			
+			else {
+				var imgurl = "images/" + user.images[0];
+				
+				str += "<div class='photo' style='background-image: url(\"" + imgurl + "\")'></div>";
+				}
+				str += "<div class='name'>" + user.name + "</div>";
+				str += "<div class='btn-del' onclick='removeFriend(\"" + user.id + "\")'></div>";
+				str += "</div>";
+				str += "</div>";
+				return str;
+			}
+		
+		function removeFriend(uid) {
+			var params = {id: myId, frid: uid}; 
+			
+			AJAX.call("jsp/friendRemove.jsp", params, function(data) {
+				var code = data.trim(); 
+				if (code == "ER") {
+					alert("친구 삭제 중 오류가 발생하였습니다."); 
+				}
+				else {
+					alert("친구 삭제가 완료되었습니다.");
+					window.location.reload();
+				}
+			});
+		}
+		
+		function addFriend(){
+			var fid = $("#fid").val().trim(); 
+			var params = {id: myId, frid: fid}; 
+			
+			AJAX.call("jsp/friendAdd.jsp", params, function(data) {
+			var code = data.trim(); 
+			
+			if (code == "NEX"){
+				alert("존재하지 않는 아이디입니다."); 
+				window.location.reload();
+				return;
+			}
+			else {
+				AJAX.call("jsp/friendAdd.jsp", params, function(data) {
+					var code = data.trim();
+					
+					alert(code);
+					
+					if (code == 1) {
+						alert("이미 추가된 친구입니다."); 
+						window.location.reload();
+						return;
+					}
+					if(code== 2){
+						alert("친구 추가가 완료되었습니다.");
+						window.location.reload();
+						return;
+					}
+					if(code== 3){
+						alert("에러가 발생했습니다.");
+						window.location.reload();
+						return;
+					}
+				});
+			}	
+		});
+	}
+		
+		function goAdd() {window.location.href = "friendAdd.html";}
+		function friend() {window.location.href = "friend.html";}
+		function community() {window.location.href = "Community.html";}
+		function mandal() {window.location.href = "Mandal.html";}
+		function check() {window.location.href = "Check.html";}
+		function myInfo() {window.location.href = "myInfo.html";}
+
+</script>

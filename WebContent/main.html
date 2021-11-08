@@ -1,0 +1,89 @@
+<html>
+<head>
+<meta name=viewport content="width=device-width, initial-scale=1, user-scalable=0">
+<meta charset="utf-8" />
+<link rel="stylesheet" href="css/core.css">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/selectBox.css">
+<link rel="stylesheet" href="css/Mandal_Art_To_Do_List.css">
+<title>만다라트</title>
+<style>
+</style>
+</head>
+
+<body>
+
+<div class="page-hdr"> 홈 </div> 
+
+<article>
+	<script type="text/javascript" src="js/Mandal_Art_CONTENTS.js"></script>
+    	<section id="section1">
+        <div id="MandalArt">
+           <div class="box" id="box5" ><div class="con"></div></div>
+ 	       <div class="box" id="box14"><div class="con"></div></div>
+           <div class="box" id="box23"><div class="con"></div></div>
+           <div class="box" id="box32"><div class="con"></div></div>
+           <div class="box" id="box41"><div class="con"></div></div>
+           <div class="box" id="box50"><div class="con"></div></div>
+           <div class="box" id="box59"><div class="con"></div></div>
+           <div class="box" id="box68"><div class="con"></div></div>
+           <div class="box" id="box77"><div class="con"></div></div>
+        </div>   
+		<script type="text/javascript" src="js/mandalArtEffect.js">
+		</script>
+        </section>
+        <section id="section2">
+        	<script type="text/javascript" src="js/searchTodayToDoList.js"></script>
+            <form name="ToDoList" id="ToDoList">
+            	<select name="mandalArtMonth"onchange="handleOnChange(this)">
+					<option value="1">1월</option>
+					<option value="2">2월</option>
+				</select>
+				<select name="mandalArtDay"onchange="handleOnChange(this)">
+					<option value="1">1일</option>
+					<option value="2">2일</option>
+				</select>
+				<select name="mandalArtOption"onchange="handleOnChange(this)">
+					<option value="목표별">목표별</option>
+					<option value="우선순위별" selected>우선순위별</option>
+				</select>
+				<br>
+                <script type="text/javascript" src="js/printTodayToDoList.js"></script>
+        		<script type="text/javascript" src="js/search&printToDoList.js"></script>   
+                   
+                <input type="submit" value="저장">
+            </form>
+        </section>
+</article>
+
+<div class="page-body">
+	<div class="page-mnu">
+		<div class="menu" onclick="friend()">
+		<img src="https://i.imgur.com/JBXRb3O.png"></div> 
+		<div class="menu" onclick="community()">
+		<img src="https://i.imgur.com/3F1bCYa.png"></div> 
+		<div class="menu" onclick="mandal()">
+		<img src="https://i.imgur.com/mdo2SNQ.png"></div>
+		<div class="menu" onclick="check()">
+		<img src="https://i.imgur.com/ml9uCkN.png"></div>
+		<div class="menu" onclick="myInfo()">
+		<img src="https://i.imgur.com/1eBx8r8.png"></div>
+	</div>
+</div>
+
+
+</body>
+</html>
+
+<script src="js/jquery-3.6.0.min.js"></script> 
+<script src="js/core.js"></script>
+<script>
+
+	function friend() {window.location.href = "friend.html";}
+	function community() {window.location.href = "Community.html";}
+	function mandal() {window.location.href = "Mandal.html";}
+	function check() {window.location.href = "Check.html";}
+	function myInfo() {window.location.href = "myInfo.html";}
+	
+	
+</script>

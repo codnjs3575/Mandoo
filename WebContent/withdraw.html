@@ -1,0 +1,71 @@
+<html>
+<head>
+<meta name=viewport content="width=device-width, initial-scale=1, user-scalable=0">
+<meta charset="utf-8" />
+<link rel="stylesheet" href="css/core2.css">
+<title>MySNS</title>
+<style>
+	.desc {
+		float: left;
+		width: 100%; 
+		color: #888; 
+		font-size: 0.9em;
+	}
+</style>
+</head>
+<body>
+
+<div class="page-hdr2"> 회원탈퇴 </div> 
+<div class="page-body">
+
+<div class="section pad-24 mtop-30">
+	<input id="pw" type="password" placeholder="비밀번호" required>
+	<input type="submit" class="mtop-20" value="탈퇴" onclick = "withdraw()">
+</div>
+
+
+
+</body>
+</html>
+
+<script src="js/jquery-3.6.0.min.js"></script> 
+<script src="js/core.js"></script>
+<script>
+	$(document).ready(function() {
+		Page.init(setup); 
+	});
+	
+	var loginId = null;
+	function setup(uid){
+		loginId = uid;	
+	}
+
+	function withdraw() {
+		id = loginId;
+		
+		var pw = $("#pw").val().trim(); 
+		if (pw == "") {
+			alert("비밀번호를 입력해 주세요."); $("#pw").focus();
+			return;
+			}
+
+		var url ="jsp/withdraw.jsp?id=" + id + "&pw=" + pw;
+		
+		AJAX.call(url, null, function(data) {
+			var code = data.trim(); 
+			
+			if(code == "PW") { 
+				
+				alert("패스워드가 일치하지 않습니다."); 
+			}
+			
+			else if(code == "ER") { 
+				alert("회원 탈퇴 중 오류가 발생하였습니다."); 
+			}
+			
+			else if(code=="OK"){ 
+				alert("회원 탈퇴가 완료되었습니다.");
+				window.location.href = "login.html"; }
+			}); 
+	}
+</script>

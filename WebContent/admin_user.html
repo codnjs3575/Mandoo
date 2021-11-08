@@ -1,0 +1,98 @@
+<html>
+<head>
+<meta name=viewport content="width=device-width, initial-scale=1, user-scalable=0">
+<meta charset="utf-8" />
+<link rel="stylesheet" href="css/core.css">
+<title>관리자 페이지</title>
+<style>
+	.feed { border-top: 1px solid #eee; }
+	
+	.feed .author { position: relative; }
+	
+	.feed .author .btn-del {
+		position: absolute;
+		right: 16px; top: 20px;
+		width: 42px; height: 42px;
+		background-image: url("images/ico_delete.png");
+		background-size: 24px;
+		background-position: 50%;
+		background-repeat: no-repeat;
+	}
+</style>
+</head> 
+
+
+<body>
+	<div class="page-hdr">관리자 페이지</div> 
+	<div class="page-body">
+		<table id="list" class="section mtop-20 pad-16"></table> 
+	</div>
+</body> 
+</html>
+	
+	
+<script src="js/jquery-3.6.0.min.js"></script> 
+<script src="js/core.js"></script>
+<script>
+	$(document).ready(function() {
+		Page.init(start); 
+	});
+	
+	var myId = null; 
+	
+	function start(uid) {
+		myId = uid;
+		
+		AJAX.call("jsp/userList.jsp", {id : uid}, function(data) {
+			var list = JSON.parse(data.trim());
+			show(list); 
+		});
+	}
+	
+	function show(list) {
+		var str = "", cnt = 0;
+		str += "아이디 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"; 
+		str += "닉네임 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		str += "가입 일";
+		
+		for (var i=0; i<list.length; i++) {
+			if (list[i].id == myId) continue;
+			str += getFeedCode(list[i]);
+			cnt++;
+		}
+		$("#list").append(str); 
+		if (cnt == 0) {
+			$(".page-msg").removeClass("hide"); 
+		}
+	}
+		
+	function getFeedCode(user) { 
+		var str = "<div class='feed'>"; 
+			str += "<div class='author'>"; 
+				str += "<div class='id'>" + user.id + "</div>";
+				str += "<div class='name'>" + user.name + "</div>";
+				str += "<div class='ts'>" + user.ts + "</div>";
+				str += "<div class='btn-del' onclick='removeUser(\"" + user.id + "\")'></div>";
+			str += "</div>";
+		str += "</div>";
+		return str;
+		}
+	
+	function removeUser(uid) {
+		var params = {id:uid}; 
+		
+		AJAX.call("jsp/userRemove.jsp", params, function(data) {
+			var code = data.trim(); 
+			if (code == "ER") {
+				alert("회원 삭제 중 오류가 발생하였습니다."); 
+			}
+			else {
+				alert("회원 삭제가 완료되었습니다.");
+				DataCache.remove("mainCache");
+				window.location.reload();
+			}
+		});
+	}
+			
+
+</script>

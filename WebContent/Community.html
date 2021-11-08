@@ -1,0 +1,200 @@
+<html>
+<head>
+<meta name=viewport content="width=device-width, initial-scale=1, user-scalable=0"> 
+<meta charset="utf-8" />
+<link rel="stylesheet" href="css/core.css">
+<link rel="stylesheet" href="css/main.css">
+
+<title>만다라트</title>
+<style>
+.dlt {
+	float: right;
+    text-align: center;
+   	font-size:10px;
+    width:20%;
+    background-color: white;
+    color: grey;
+    border: 1px solid grey;
+    border-radius: 10px;
+}
+.updt {
+	float: right;
+    text-align: center;
+   	font-size:10px;
+    width:20%;
+    background-color: white;
+    color: grey;
+    border: 1px solid grey;
+    border-radius: 10px;
+}
+</style>
+
+</head>
+
+<body>
+	<div class="page-hdr">만다라트</div> 
+	<div class="page-body"> 
+		<div class="page-mnu">
+		<div class="menu" onclick="friend()">
+		<img src="https://i.imgur.com/JBXRb3O.png"></div> 
+		<div class="menu" onclick="community()">
+		<img src="https://i.imgur.com/3F1bCYa.png"></div> 
+		<div class="menu" onclick="mandal()">
+		<img src="https://i.imgur.com/mdo2SNQ.png"></div>
+		<div class="menu" onclick="check()">
+		<img src="https://i.imgur.com/ml9uCkN.png"></div>
+		<div class="menu" onclick="myInfo()">
+		<img src="https://i.imgur.com/1eBx8r8.png"></div>
+	</div>
+	
+		<div id="content" class="section"></div>
+		<div id="list" class="section"></div>
+		<div class="section mtop-10 mbot-30 pad-16">
+			<div class="button" onclick="getNext()">작성글 더보기</div> 
+		</div>
+		
+		<input type="button" class="post-button" onclick="feedadd()">
+	</div>
+	
+	
+</body> 
+</html>
+
+
+<script src="js/jquery-3.6.0.min.js"></script> 
+<script src="js/core.js"></script>
+
+<script>
+
+	function feedadd(){ window.location.href = "feedAdd.html"; }
+
+	$(document).ready(function() {
+		Page.init(start); 
+	});
+	
+	
+	var myId = null; 
+	
+	var minNo = -1;
+	var feedList = [];
+	function start(uid) {
+		myId = uid;
+		
+		var feeds = DataCache.get("mainCache"); 
+		if (feeds != null) {
+			console.log("[start] fetch the existing feed list from DataCache ..."); 
+			feedList = feeds;
+			show(feedList);
+		}
+		else {
+			AJAX.call("jsp/feedGetGroup.jsp", null, function(data) {
+				var feeds = JSON.parse(data.trim());
+				console.log("[start] fetch a new feed list from the server ..."); 
+				feedList = feeds;
+				DataCache.set("mainCache", feedList);
+				show(feedList); 
+			});
+		} 
+	}
+
+
+	function show(feeds) {
+		console.log(feeds);
+
+		if (feeds.length > 0) {
+			minNo = feeds[feeds.length - 1].no;
+			}
+		
+		var str = "";
+		for (var i=0; i<feeds.length; i++) {
+			str += getFeedCode(feeds[i]); 
+		}
+		$("#list").append(str); 
+		
+	}
+	
+	function getFeedCode(feed) {
+		var name = (feed.user == null) ? feed.id : feed.user.name; 
+		//var str = "<div class='feed' onclick=showFeed("+ feed.no +")>";
+		var str = "<div class='feed'>";
+			str += "<div class='author'>";
+				if (feed.user == null || feed.user.images == null) {
+					str += "<div class='photo'></div>"; 
+				} 
+				else {
+					var imgurl = "images/" + feed.user.images[0];
+					str += "<div class='photo' style='background-image: url(\"" + imgurl + "\")'></div>";
+				}
+				
+				str += "<div class='name'>" + name + "</div>";
+				str += "<div class='ts'>" + feed.ts + "</div>"; 
+			str += "</div>";
+			
+			if (feed.images != null) {
+				var imgurl = "images/" + feed.images[0];
+				str += "<div class='image' style='background-image: url(\"" + imgurl + "\")'></div>"; 
+			}
+			
+			str += "<div class='text'>" + feed.content + "</div>"; 
+			
+			if(myId==feed.id){
+				str += "<div class= 'updt' onclick='Updatefeed("+feed.no+")'> 수정</div>"	
+				str += "<div class= 'dlt' onclick='Deletefeed("+feed.no+")'> 삭제</div>"	
+			}
+		
+		str += "</div>";
+		return str;
+	}
+	
+	function Updatefeed(fno){
+		window.location.href = "feedUpdate.html?id="+myId+"&no="+fno;
+		return;
+	}
+	
+	function Deletefeed(fno){
+
+		var params = {no:fno}; 
+		
+		AJAX.call("jsp/feedDelete.jsp", params, function(data) {
+			var code = data.trim(); 
+			if (code == "ER") {
+				alert("게시글 삭제 중 오류가 발생하였습니다."); 
+			}
+			else {
+				alert("게시글 삭제가 완료되었습니다.");
+				DataCache.remove("mainCache");
+				window.location.reload();
+			}
+		});
+	}
+	
+	function showFeed(fno){
+		for(var i=0; i<feedList.length;i++){
+			if(feedList[i].no == fno){
+				console.log(feedList[i]);
+				Page.go("feedView.html",feedList[i]);
+				return;
+			}
+		}
+		
+	}
+	
+	function getNext() {
+		var params = {maxNo: minNo}; 
+		AJAX.call("jsp/feedGetGroup.jsp", params, function(data) {
+			var feeds = JSON.parse(data.trim()); 
+			feedList = feedList.concat(feeds); 
+			DataCache.set("mainCache", feedList);
+			
+		show(feeds); 
+		});
+	}
+	
+	function friend() {window.location.href = "friend.html";}
+	function community() {window.location.href = "Community.html";}
+	function mandal() {window.location.href = "Mandal.html";}
+	function check() {window.location.href = "Check.html";}
+	function myInfo() {window.location.href = "myInfo.html";}
+		
+	
+</script>

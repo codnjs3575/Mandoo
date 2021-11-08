@@ -1,0 +1,41 @@
+<html>
+<head>
+<meta name=viewport content="width=device-width, initial-scale=1, user-scalable=0">
+<meta charset="utf-8" />
+<link rel="stylesheet" href="css/core2.css">
+<title>MySNS</title>
+<style>
+	.desc {
+		float: left;
+		width: 100%; 
+		color: #888; 
+		font-size: 0.9em;
+	}
+</style>
+</head>
+<body>
+
+<div class="page-hdr2"> 관리자 페이지 </div> <div class="page-body">
+
+<div class="section pad-24 mtop-30">
+	<input type="submit" class="mtop-20" value="회원 관리" onclick = "admin_user()">
+	<input type="submit" class="mtop-20" value="게시글 관리" onclick = "admin_feed()">
+</div>	
+
+
+
+</body>
+</html>
+
+<script src="js/jquery-3.6.0.min.js"></script> 
+<script src="js/core.js"></script>
+<script>
+
+	function admin_user() {
+		window.location.href = "admin_user.html";
+	}
+	
+	function admin_feed() {
+		window.location.href = "admin_feed.html";
+	}
+</script>

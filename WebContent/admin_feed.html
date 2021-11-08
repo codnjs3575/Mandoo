@@ -1,0 +1,132 @@
+<html>
+<head>
+<meta name=viewport content="width=device-width, initial-scale=1, user-scalable=0">
+<meta charset="utf-8" />
+<link rel="stylesheet" href="css/core.css">
+<title>관리자 페이지</title>
+<style>
+	.feed { border-top: 1px solid #eee; }
+	
+	.feed .author { position: relative; }
+	
+	.feed .btn-del {
+		position: right;
+		right: 16px; top: 20px;
+		width: 42px; height: 42px;
+		background-image: url("images/ico_delete.png");
+		background-size: 24px;
+		background-position: 50%;
+		background-repeat: no-repeat;
+	}
+</style>
+</head> 
+
+
+<body>
+	<div class="page-hdr">관리자 페이지</div> 
+	<div class="page-body">
+		<table id="list" class="section mtop-20 pad-16"></table> 
+	</div>
+</body> 
+</html>
+	
+	
+<script src="js/jquery-3.6.0.min.js"></script> 
+<script src="js/core.js"></script>
+<script>
+	$(document).ready(function() {
+		Page.init(start); 
+	});
+	
+	
+	var myId = null; 
+	
+	var minNo = -1;
+	var feedList = [];
+	function start(uid) {
+		myId = uid;
+		
+		var feeds = DataCache.get("mainCache"); 
+		if (feeds != null) {
+			console.log("[start] fetch the existing feed list from DataCache ..."); 
+			feedList = feeds;
+			show(feedList);
+		}
+		else {
+			AJAX.call("jsp/feedGetGroup.jsp", null, function(data) {
+				var feeds = JSON.parse(data.trim());
+				console.log("[start] fetch a new feed list from the server ..."); 
+				feedList = feeds;
+				DataCache.set("mainCache", feedList);
+				show(feedList); 
+			});
+		} 
+	}
+	
+	function show(feeds) {
+		var str = "", cnt = 0;
+		str += "번호 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"; 
+		str += "작성자 &nbsp;&nbsp;";
+		str += "작성일 &nbsp;&nbsp;";
+		str += "내용 &nbsp;&nbsp;";
+		
+		if (feeds.length > 0) {
+			minNo = feeds[feeds.length - 1].no;
+			}
+		
+		for (var i=0; i<feeds.length; i++) {
+			str += getFeedCode(feeds[i]); 
+		}
+		$("#list").append(str); 
+		
+	}
+	
+	function getFeedCode(feed) {
+		var name = (feed.user == null) ? feed.id : feed.user.name; 
+		//var str = "<div class='feed' onclick=showFeed("+ feed.no +")>";
+		var str = "<div class='feed'>";
+			str += "<div class='author'>";
+				if (feed.user == null || feed.user.images == null) {
+					str += "<div class='photo'></div>"; 
+				} 
+				else {
+					var imgurl = "images/" + feed.user.images[0];
+					str += "<div class='photo' style='background-image: url(\"" + imgurl + "\")'></div>";
+				}
+				
+				str += "<div class='name'>" + name + "</div>";
+				str += "<div class='ts'>" + feed.ts + "</div>"; 
+			str += "</div>";
+			
+			if (feed.images != null) {
+				var imgurl = "images/" + feed.images[0];
+				str += "<div class='image' style='background-image: url(\"" + imgurl + "\")'></div>"; 
+			}
+			
+			str += "<div class='text'>" + feed.content + "</div>"; 
+			
+			str += "<div class='btn-del' onclick='removeFeed(\"" + feed.no + "\")'></div>";
+		str += "</div>";
+		return str;
+	}
+	
+	
+	
+	function removeFeed(fno) {
+		var params = {no:fno}; 
+		
+		AJAX.call("jsp/feedDelete.jsp", params, function(data) {
+			var code = data.trim(); 
+			if (code == "ER") {
+				alert("게시글 삭제 중 오류가 발생하였습니다."); 
+			}
+			else {
+				alert("게시글 삭제가 완료되었습니다.");
+				DataCache.remove("mainCache");
+				window.location.reload();
+			}
+		});
+	}
+			
+
+</script>

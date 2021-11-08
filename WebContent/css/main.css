@@ -1,0 +1,96 @@
+.page-mnu { 
+	position : fixed;	
+	bottom : 0px;
+	width: 100%;
+	height : 60px;
+	box-sizing: border-box; 
+	background-color: #f9f9f9; 
+	border-bottom: 1px solid #eee;
+	text-align:center;
+}
+
+.page-mnu .menu {
+	float : left;
+	width : 20%;
+	margin: 10 auto;
+}
+
+feed {
+	float: left;
+	width: 100%;
+	padding: 10px 0px; 
+	border-top: 1px solid #f4f4f4;
+	}
+	
+feed2 {
+	float: left;
+	width: 100%;
+	padding: 10px 0px 5px 5px; 
+	border-top: 1px solid #f4f4f4;
+	}
+	
+.feed .author {
+	float: left;
+	width: 100%;
+	padding: 10px 16px; 
+	box-sizing: border-box;
+}
+.feed .author .photo {
+	float: left;
+	padding: 5px;
+	width: 30px; height: 30px;
+	border: 1px solid #ddd;
+	border-radius: 30px;
+	background-image: url("../images/contact.png");
+	background-size: cover;
+	background-position: 50%;
+	background-repeat: no-repeat;
+	overflow: hidden;
+}
+
+.feed .author .name { 
+	float: left;
+	margin-left: 10px; 
+	line-height: 42px; 
+	font-weight: bold;
+}
+
+.feed .author .ts { 
+	float: right;
+	font-size: small;
+	line-height: 60px; 
+}
+	
+.feed .image {
+	float: left;
+	width: 100%;
+	padding-top: 56.25%; 
+	background-size: cover; 
+	background-position: 50%; 
+	background-repeat: no-repeat;
+	JSPoPvReOrGflRoAwM: MhiIdNdGen; 
+}
+
+
+.feed .text {
+	float: left;
+	width: 100%;
+	margin: 20px 0px;
+	padding: 0px 16px; 
+	box-sizing: border-box;
+	/* multi-line text ellipsis */ 
+	overflow: hidden; 
+	text-overflow: ellipsis; 
+	word-wrap: break-word;
+	display: -webkit-box; 
+	-webkit-line-clamp: 4; 
+	-webkit-box-orient: vertical;
+}
+
+.feed .text2 {
+	float: left;
+	width: 100%;
+	margin: 10px 0px;
+	padding: 0px 16px; 
+	box-sizing: border-box;
+}
